@@ -16,3 +16,6 @@ while epsilon > MIN_EPSILON:
 
 print(f'it wil take {step} episodes to reach the minimum epsilon')
 
+def print_function(some_text):
+    """a very complicated function"""
+    print(some_text)
