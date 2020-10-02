@@ -13,9 +13,9 @@ DOI: ...
 The paper was published as part of a collaboration on Machine Learning between the __Institute of Rock Mechanics and Tunnelling (Graz University of Technology)__
 and the __Norwegian Geotechnical Institute (NGI)__ in Oslo.
 
-## Code Structure
+## Code and Folder Structure
 
-The code is structured in the following way:
+To run the Reinfocement Learning SImulation, execute the Python files from a folder, that contains the below given files and subfolders:
 
 - `00_main.py` ... is the main executing file
 - `A_utilities.py` ... is a library containing useful functions that do not directly belong to the environment or the agent
@@ -23,6 +23,9 @@ The code is structured in the following way:
 - `C_geotechnician.py` ... part of the environment that evaluates the stability and also contains the agent itself
 - `D_tunnel.py` ... part of the environment that handles the rewards and updates the progress of the excavation
 - `E_plotter.py` ... plotting functionalities to visualize the training progress or render episodes
+- 02_plots ... a folder that will contain plots and renderings of episodes
+  - tmp ... a subfolder of 02_plots that temporarily saves single frames of rendered episodes
+- 04_checkpoints ... a folder where checkpoints of the agent are saved and loaded from
 
 ## References
 
