@@ -21,8 +21,8 @@ The code is structured in the following way:
 - `A_utilities.py` ... is a library containing useful functions that do not directly belong to the environment or the agent
 - `B_generator.py` ... part of the environment that generates a new geology for every episode
 - `C_geotechnician.py` ... part of the environment that evaluates the stability and also contains the agent itself
-- `D_plotter.py` ... plotting functionalities to visualize the training progress or render episodes
-- `E_tunnel.py` ... part of the environment that handles the rewards and updates the progress of the excavation
+- `D_tunnel.py` ... part of the environment that handles the rewards and updates the progress of the excavation
+- `E_plotter.py` ... plotting functionalities to visualize the training progress or render episodes
 
 ## References
 
