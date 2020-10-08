@@ -41,6 +41,7 @@ class tunnel():
                 self.pos_th += self.cutting_lengths[action]*self.RES
             elif action >= 200:  # bench
                 self.pos_bi += self.cutting_lengths[action]*self.RES
+            self.dist_th_bi = np.abs(self.pos_th - self.pos_bi)
 
     def update_sections(self, rockmass_types, action):
         # update top heading
