@@ -32,11 +32,11 @@ TH_1_0, TH_1_2, TH_5_0, TH_5_2 = 110, 112, 150, 152  # top heading
 B_0_0, B_0_2, B_2_0, B_2_2 = 200, 202, 220, 222  # bench & invert
 
 # episode parameters
-EPISODES = 120_000  # total number of episodes to go through
+EPISODES = 120_001  # total number of episodes to go through
 MAX_EP_LENGTH = 200  # max. allowed number of steps per episode
 SHOW_EVERY = 1_000  # make a plot, rendering and save every n episode
 PRINT_EVERY = 100  # print progress every n episode
-PREV_EP = 75_000  # number of starting episode (0 for a fresh start)
+PREV_EP = 0  # number of starting episode (0 for a fresh start)
 STATS_SAVEPATH = r'02_plots\episode_stats.csv'  # path to save the stats file
 
 # agent's hyperparameters
@@ -115,6 +115,7 @@ for episode in range(PREV_EP, PREV_EP+EPISODES):
     actions = []  # all actions used during episode
     pos_ths = []  # all positions of the top heading excavation
     pos_bis = []  # all positions of bench excavation
+    dists_th_bi = []  # distances between top heading and bench
     rewards = []  # development of reward over the episode
     losses_ = []  # ANN loss after each prediction
     accuracies_ = []  # ANN acuracy after each prediction
@@ -195,11 +196,15 @@ for episode in range(PREV_EP, PREV_EP+EPISODES):
         actions.append(a)
         pos_ths.append(tunnel.pos_th)
         pos_bis.append(tunnel.pos_bi)
+        dists_th_bi.append(tunnel.dist_th_bi)
 
     # create dataframe with stats of episode and then add to main stats df
+    frac_rt1_rt2 = np.unique(rockmass_types, return_counts=True)[1]
+    frac_rt1_rt2 = frac_rt1_rt2[0] / frac_rt1_rt2[1]
     df_ep = utils.ep_stats_dataframe(episode, rewards, epsilon, ep_pf, losses_,
-                                     accuracies_, instabilites, tunnel.pos_th,
-                                     tunnel.pos_bi, step, term, actions)
+                                     accuracies_, instabilites, frac_rt1_rt2,
+                                     tunnel.pos_th, tunnel.pos_bi,
+                                     max(dists_th_bi), step, term, actions)
     df = df.append(df_ep, ignore_index=True)
 
     # decay epsilon
