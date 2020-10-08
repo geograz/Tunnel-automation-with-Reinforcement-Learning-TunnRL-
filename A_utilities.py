@@ -30,16 +30,18 @@ class utilities():
             df = pd.DataFrame({'episode': [], 'ep. rewards': [],
                                'epsilons': [], 'ep. pf': [], 'ep. loss': [],
                                'ep. accuracy': [], 'instabilities': [],
+                               'frac. RT1:RT2': [],
                                'reached pos. top.head.': [],
                                'reached pos. bench': [],
+                               'max. dist th-bi': [],
                                'blasts per breakthrough': [], 'terminals': [],
                                '110': [], '112': [], '150': [], '152': [],
                                '200': [], '202': [], '220': [], '222': []})
         return df
 
     def ep_stats_dataframe(self, episode, rewards, epsilon, ep_pf, losses_,
-                           accuracies_, instabilites, pos_th, pos_bi, step,
-                           term, actions):
+                           accuracies_, instabilites, frac_rt1_rt2, pos_th,
+                           pos_bi, dist_th_bi, step, term, actions):
         # create and return dataframe with statistics of one episode that will
         # then be appended to the main episode statistics dataframe
         df = pd.DataFrame({'episode': [episode], 'ep. rewards': [sum(rewards)],
@@ -47,8 +49,10 @@ class utilities():
                            'ep. loss': [np.mean(losses_)],
                            'ep. accuracy': [np.mean(accuracies_)],
                            'instabilities': [instabilites],
+                           'frac. RT1:RT2': [frac_rt1_rt2],
                            'reached pos. top.head.': [pos_th],
                            'reached pos. bench': [pos_bi],
+                           'max. dist th-bi': [dist_th_bi],
                            'blasts per breakthrough': [step],
                            'terminals': [term],
                            '110': [0], '112': [0], '150': [0], '152': [0],
