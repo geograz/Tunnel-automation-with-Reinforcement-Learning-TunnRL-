@@ -19,7 +19,7 @@ class utilities():
     def __init__(self, N_CLASSES):
         self.N_CLASSES = N_CLASSES
 
-    def master_stats_dataframe(self, savepath, start_episode):
+    def master_stats_dataframe(self, savepath, start_episode=None):
         # function that either gets an existing dataframe with already
         # record edepisode statistics or create new one
         try:
