@@ -15,9 +15,10 @@ and the __Norwegian Geotechnical Institute (NGI)__ in Oslo.
 
 ## Code and Folder Structure
 
-To run the Reinfocement Learning SImulation, execute the Python files from a folder, that contains the below given files and subfolders:
+To run the Reinfocement Learning Simulation, execute the Python files from a folder, that contains the below given files and subfolders:
 
 - `00_main.py` ... is the main executing file
+- `02_model_tester.py` ... file that runs and tests individual checkpoints of already trained model for further analysis
 - `A_utilities.py` ... is a library containing useful functions that do not directly belong to the environment or the agent
 - `B_generator.py` ... part of the environment that generates a new geology for every episode
 - `C_geotechnician.py` ... part of the environment that evaluates the stability and also contains the agent itself
@@ -26,6 +27,8 @@ To run the Reinfocement Learning SImulation, execute the Python files from a fol
 - 02_plots ... a folder that will contain plots and renderings of episodes
   - tmp ... a subfolder of 02_plots that temporarily saves single frames of rendered episodes
 - 04_checkpoints ... a folder where checkpoints of the agent are saved and loaded from
+- 06_results ... a folder that will contain saved files and plots of trained models that are tested
+  - tmp ... a subfolder of 06_results that temporarily saves single frames of rendered episodes (like in 02_plots)
 
 ## References
 
