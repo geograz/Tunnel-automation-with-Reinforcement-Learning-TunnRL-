@@ -4,4 +4,8 @@
 # folder that will contain the checkpoints that are saved every other episode
 04_checkpoints/
 
+# folder that will contain saved files and plots from tested agents
+06_results
+
+# automatically generated folder
 __pycache__/
