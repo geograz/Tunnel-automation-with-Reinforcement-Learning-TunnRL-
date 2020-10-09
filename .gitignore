@@ -3,3 +3,5 @@
 
 # folder that will contain the checkpoints that are saved every other episode
 04_checkpoints/
+
+__pycache__/
