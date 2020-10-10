@@ -29,6 +29,7 @@ class plotter():
         self.garnet_red = np.array([139, 53, 56]) / 255
         self.omphacite_green = np.array([112, 126, 80]) / 255
         self.kyanite_blue = np.array([62, 78, 93]) / 255
+        self.actions = ['110', '112', '150', '152', '200', '202', '220', '222']
 
     def custom_cmap(self, color1, color2):
         # https://stackoverflow.com/questions/16267143/matplotlib-single-colored-colormap-with-saturation
@@ -52,8 +53,7 @@ class plotter():
                     linewidth=1.5):
 
         episode = int(df['episode'].iloc[-1])
-        actions = ['110', '112', '150', '152', '200', '202', '220', '222']
-        a_counts_norm = (df[actions].values / df['blasts per breakthrough'].values[:, None]).T
+        a_counts_norm = (df[self.actions].values / df['blasts per breakthrough'].values[:, None]).T
 
         fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(nrows=5, ncols=1,
                                                       figsize=(16, 14))
@@ -84,8 +84,8 @@ class plotter():
                         interpolation='none', vmax=0.5)
         fig.colorbar(im, cax=cax, orientation='vertical')
         ax2.set_xlim(left=0, right=episode)
-        ax2.set_yticks(np.arange(len(actions)))
-        ax2.set_yticklabels(actions)
+        ax2.set_yticks(np.arange(len(self.actions)))
+        ax2.set_yticklabels(self.actions)
         ax2.set_ylabel('action codes')
 
         ax3.plot(df['episode'], df['ep. loss'].rolling(window=windows, min_periods=1, center=True).mean(),
@@ -300,3 +300,60 @@ class plotter():
 
         for i in range(n_frames):
             os.remove(fr'02_plots\tmp\{i}.png')
+
+    def test_stats_histograms(self, df, savepath):
+        # function that plots histograms for statistics of a tested agent
+        fig, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=1, ncols=4,
+                                                 figsize=(12, 5))
+
+        ax1.hist(df['ep. rewards'], bins=30, color=self.kyanite_blue,
+                 edgecolor='black')
+        ax1.set_xlabel('cumulative\nepisode reward')
+        ax1.grid(alpha=0.5)
+
+        ax2.hist(df['instabilities'], bins=4, color=self.kyanite_blue,
+                 edgecolor='black')
+        ax2.set_xlabel('face instabilities\nper episode')
+        ax2.grid(alpha=0.5)
+
+        ax3.hist(df['max. dist th-bi']/10, bins=10, color=self.kyanite_blue,
+                 edgecolor='black')
+        ax3.set_xlabel('maximum distances between\ntop heading and bench')
+        ax3.grid(alpha=0.5)
+
+        ax4.hist(df['blasts per breakthrough'], bins=30,
+                 color=self.kyanite_blue, edgecolor='black')
+        ax4.set_xlabel('required blasts\nper episode')
+        ax4.grid(alpha=0.5)
+
+        plt.suptitle(f'{len(df)} test runs', y=0.98)
+
+        plt.tight_layout(rect=(0, 0, 1, 0.95))
+        plt.savefig(savepath, dpi=600)
+        plt.close()
+
+    def test_stats_boxplot(self, df, savepath):
+        # function that creates a boxplot of the actions that the agent took
+        action_labels = ['top.head.; cl.2m; no sup.', 'top.head.; cl.2m; sup.',
+                         'top.head.; cl.4m; no sup.', 'top.head.; cl.4m, sup.',
+                         'bench; cl.2m; no sup.', 'bench; cl.2m; sup.',
+                         'bench; cl.4m; no sup.', 'bench; cl.4m; sup.']
+
+        fig, ax = plt.subplots(figsize=(6, 6))
+
+        # boxplot with whiskers represent min-max values
+        bplot = ax.boxplot(df[self.actions].values, whis=1e6,
+                           patch_artist=True)
+
+        for box, median in zip(bplot['boxes'], bplot['medians']):
+            box.set(facecolor=self.kyanite_blue)
+            median.set(color='black', lw=3)
+
+        ax.set_xticklabels(action_labels, rotation=45, ha='right')
+        ax.set_ylabel('n choices of an action per ep.')
+        ax.set_title(f'{len(df)} test runs')
+        ax.grid(alpha=0.5)
+
+        plt.tight_layout()
+        plt.savefig(savepath, dpi=600)
+        plt.close()
