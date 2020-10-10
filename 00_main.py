@@ -19,7 +19,7 @@ import D_tunnel
 import E_plotter
 
 ###############################################################################
-# fixed variables, hyperparameters, constants, rewards (capital letters)
+# fixed variables, hyperparameters & constants (capital letters)
 
 # rockmass hyperparams
 TUNNEL_LEN = 200  # total length of tunnel until breakthrough  [m]
@@ -101,7 +101,7 @@ pltr = E_plotter.plotter()
 ###############################################################################
 
 # create / get dataframe that tracks stats of each episode
-df = utils.master_stats_dataframe(STATS_SAVEPATH, PREV_EP)
+df = utils.master_stats_dataframe(STATS_SAVEPATH, start_episode=PREV_EP)
 
 # main loop that iterates over all episodes
 for episode in range(PREV_EP, PREV_EP+EPISODES):
