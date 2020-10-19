@@ -1,4 +1,4 @@
-# Reinforcement_Learning_for_Geotechnics
+# Reinforcement Learning for Geotechnics
 
 This repository contains the codes for the paper:
 
@@ -12,6 +12,29 @@ DOI: ...
 
 The paper was published as part of a collaboration on Machine Learning between the __Institute of Rock Mechanics and Tunnelling (Graz University of Technology)__
 and the __Norwegian Geotechnical Institute (NGI)__ in Oslo.
+
+## Setup the environment
+
+Create a new environment with
+
+```bash
+conda env create --file environment.yml
+```
+
+Activate with
+
+```bash
+conda activate RL-geo
+```
+
+Deactivate with
+
+```bash
+conda deactivate
+```
+
+#should we describe how the code should be run regarding cuda-support etc? We should also describe what length of time that can be expected to train the model on a laptop (describe specs)
+
 
 ## Code and Folder Structure
 
