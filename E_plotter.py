@@ -306,22 +306,22 @@ class plotter():
         fig, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=1, ncols=4,
                                                  figsize=(12, 5))
 
-        ax1.hist(df['ep. rewards'], bins=30, color=self.kyanite_blue,
+        ax1.hist(df['ep. rewards'], bins=20, color=self.kyanite_blue,
                  edgecolor='black')
         ax1.set_xlabel('cumulative\nepisode reward')
         ax1.grid(alpha=0.5)
 
-        ax2.hist(df['instabilities'], bins=4, color=self.kyanite_blue,
+        ax2.hist(df['instabilities'], bins=20, color=self.kyanite_blue,
                  edgecolor='black')
         ax2.set_xlabel('face instabilities\nper episode')
         ax2.grid(alpha=0.5)
 
-        ax3.hist(df['max. dist th-bi']/10, bins=10, color=self.kyanite_blue,
+        ax3.hist(df['max. dist th-bi']/10, bins=20, color=self.kyanite_blue,
                  edgecolor='black')
-        ax3.set_xlabel('maximum distances between\ntop heading and bench')
+        ax3.set_xlabel('maximum distances between\ntop heading and bench [m]')
         ax3.grid(alpha=0.5)
 
-        ax4.hist(df['blasts per breakthrough'], bins=30,
+        ax4.hist(df['blasts per breakthrough'], bins=20,
                  color=self.kyanite_blue, edgecolor='black')
         ax4.set_xlabel('required blasts\nper episode')
         ax4.grid(alpha=0.5)
