@@ -79,6 +79,8 @@ if PREV_EP == 0:
 else:
     checkpoint = fr'04_checkpoints\ESA_ep{PREV_EP}.h5'
 
+episodes = EPISODES - PREV_EP
+
 # total length of observation space as number of datapoints
 n_datapoints = (TUNNEL_LEN + max(support_lengths.values())) * RESOLUTION
 observation_space_values = (2, n_datapoints, 2)  # shape of observation space
@@ -104,7 +106,7 @@ pltr = E_plotter.plotter()
 df = utils.master_stats_dataframe(STATS_SAVEPATH, start_episode=PREV_EP)
 
 # main loop that iterates over all episodes
-for episode in range(PREV_EP, PREV_EP+EPISODES):
+for episode in range(PREV_EP, PREV_EP+episodes):
     a = TH_1_2  # initial action is top heading supported with 10m support
     step = 1  # counter of steps in every episode
     instabilites = 0  # counter for how many faces are instable
