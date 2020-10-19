@@ -36,8 +36,8 @@ print('reward:', df['ep. rewards'].min(), df['ep. rewards'].max(),
       df['ep. rewards'].median())
 print('instabilities:', df['instabilities'].min(), df['instabilities'].max(),
       df['instabilities'].median())
-print('max. dist. th-b:', df['max. dist th-bi'].min(),
-      df['max. dist th-bi'].max(), df['max. dist th-bi'].median())
+print('max. dist. th-b [m]:', df['max. dist th-bi'].min()/10,
+      df['max. dist th-bi'].max()/10, df['max. dist th-bi'].median()/10)
 print('blasts per ep.:', df['blasts per breakthrough'].min(),
       df['blasts per breakthrough'].max(),
       df['blasts per breakthrough'].median())
