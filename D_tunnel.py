@@ -16,7 +16,7 @@ import numpy as np
 
 class tunnel():
 
-    def __init__(self, TUNNEL_LEN, RESOLUTION,
+    def __init__(self, TUNNEL_LEN:int, RESOLUTION,
                  cutting_lengths, support_lengths):
         self.cutting_lengths = cutting_lengths
         self.support_lengths = support_lengths
@@ -35,7 +35,7 @@ class tunnel():
             pass
         elif self.pos_bi > max_pos and action >= 200:
             pass
-        # only update if position is not bejond breakthrough
+        # only update if position is not beyond breakthrough
         else:
             if action < 200:  # top heading
                 self.pos_th += self.cutting_lengths[action]*self.RES

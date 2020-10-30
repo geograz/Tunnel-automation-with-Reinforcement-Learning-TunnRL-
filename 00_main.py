@@ -11,6 +11,9 @@ code contributors: G.H. Erharter
 """
 
 import numpy as np
+from pathlib import Path
+from tqdm import tqdm
+np.seterr(all='ignore') #ignore floating point errors
 
 import A_utilities
 import B_generator
@@ -24,7 +27,7 @@ import E_plotter
 # rockmass hyperparams
 TUNNEL_LEN = 200  # total length of tunnel until breakthrough  [m]
 RESOLUTION = 10  # factor that multiplies TUNNEL_LEN; 10 => dm
-MAX_DIST = 50  # max. allowed distance between TH and bench  [m]
+MAX_DIST = 50  # max. allowed distance between top heading and bench  [m]
 N_CLASSES = 2  # number of rockmass classes
 
 # identify the action - codes
@@ -34,10 +37,10 @@ B_0_0, B_0_2, B_2_0, B_2_2 = 200, 202, 220, 222  # bench & invert
 # episode parameters
 EPISODES = 120_001  # total number of episodes to go through
 MAX_EP_LENGTH = 200  # max. allowed number of steps per episode
-SHOW_EVERY = 1_000  # make a plot, rendering and save every n episode
-PRINT_EVERY = 100  # print progress every n episode
+SHOW_EVERY = 10_000  # make a plot, rendering and save every n episode
+PRINT_EVERY = 1_000  # print progress every n episode
 PREV_EP = 0  # number of starting episode (0 for a fresh start)
-STATS_SAVEPATH = r'02_plots\episode_stats.csv'  # path to save the stats file
+STATS_SAVEPATH = Path('02_plots/episode_stats.csv')  # path to save the stats file
 
 # agent's hyperparameters
 epsilon = 1  # initial exploration
@@ -77,7 +80,7 @@ rockmass_dict2 = {'spec. weight [N/m³]': 25000, 'cohesion [Pa]': 40000,
 if PREV_EP == 0:
     checkpoint = None
 else:
-    checkpoint = fr'04_checkpoints\ESA_ep{PREV_EP}.h5'
+    checkpoint = Path(f'04_checkpoints/ESA_ep{PREV_EP}.h5')
 
 episodes = EPISODES - PREV_EP
 
@@ -105,11 +108,11 @@ pltr = E_plotter.plotter()
 # create / get dataframe that tracks stats of each episode
 df = utils.master_stats_dataframe(STATS_SAVEPATH, start_episode=PREV_EP)
 
-# main loop that iterates over all episodes
-for episode in range(PREV_EP, PREV_EP+episodes):
+# main loop that iterates over all episodes. Tqdm show progress bar
+for episode in tqdm(range(PREV_EP, PREV_EP+episodes), ascii=True, unit="episode"):
     a = TH_1_2  # initial action is top heading supported with 10m support
     step = 1  # counter of steps in every episode
-    instabilites = 0  # counter for how many faces are instable
+    instabilites = 0  # counter for how many faces that are instable
     ep_pf = 0  # initial face pressure of episode
     done = False  # one episode continues until done = True
 
@@ -122,6 +125,9 @@ for episode in range(PREV_EP, PREV_EP+episodes):
     losses_ = []  # ANN loss after each prediction
     accuracies_ = []  # ANN acuracy after each prediction
 
+    ############################################################################
+    # resets environment
+
     # generate new / unique geology for episode
     rockmass_types = gen.generate_rock_types(N_CLASSES) + 1
     # instantiate new tunnel sections
@@ -133,20 +139,23 @@ for episode in range(PREV_EP, PREV_EP+episodes):
     # build the ANN's input
     current_state = utils.ANN_input(geo_section, sup_section)
 
+    #############################################################################
+
     # excavate until a terminal state is reached (= breakthrough or timeout)
     while not done:
         # eventually render episode
         if episode % SHOW_EVERY == 0 and episode > PREV_EP:
             # renders individual frames to finally render whole episode
             pltr.render_frame(tunnel.geo_section, tunnel.sup_section,
-                              fr'02_plots\tmp\{step-1}.png')
+                              Path(f'02_plots/tmp/{step-1}.png'))
 
         # epsilon greedy action selection policy
+        # exploitation
         if np.random.random() > epsilon:  # query a model for Q values
             action = np.argmax(agent.get_qs(current_state))
-        else:  # Get random action
+        else:  # Get random action - exploration
             action = np.random.randint(0, len(cutting_lengths.keys()))
-        a = list(cutting_lengths.keys())[action]  # get eaction code
+        a = list(cutting_lengths.keys())[action]  # get action code
 
         # update positions of excavation unless there is already a breakthrough
         tunnel.update_positions(a, max_pos)
@@ -184,7 +193,7 @@ for episode in range(PREV_EP, PREV_EP+episodes):
         hist = agent.train(done, step)
         try:
             losses_.append(hist.history['loss'][0])
-            accuracies_.append(hist.history['acc'][0])
+            accuracies_.append(hist.history['accuracy'][0])
         except AttributeError:
             pass
 
@@ -220,15 +229,15 @@ for episode in range(PREV_EP, PREV_EP+episodes):
         pltr.progress_plot(np.array(pos_ths), np.array(pos_bis),
                            np.array(actions), rewards, 110, 112, 150, 152,
                            200, 202, 220, 222, episode,
-                           fr'02_plots\episode_{episode}_sample.png')
+                           Path(f'02_plots/episode_{episode}_rewards.png'))
 
         pltr.reward_plot(df,
-                         savepath=fr'02_plots\episode_{episode}_rewards.png',
+                         savepath=Path(f'02_plots/episode_{episode}_rewards.png'),
                          windows=100, plot_eprewpoints=True)
 
-        pltr.render_episode(r'02_plots\tmp', fps=2, x_pix=1680, y_pix=480,
-                            savepath=fr'02_plots\ep{episode}.avi')
+        #pltr.render_episode(Path('02_plots/tmp'), fps=2, x_pix=1680, y_pix=480, 
+        #savepath=Path(f'02_plots/ep{episode}.avi'))
 
         df.to_csv(STATS_SAVEPATH, index=False)
 
-        agent.save(fr'04_checkpoints\ESA_ep{episode}.h5')
+        agent.save(Path(f'04_checkpoints/ESA_ep{episode}.h5'))

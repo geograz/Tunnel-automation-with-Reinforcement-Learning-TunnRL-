@@ -21,6 +21,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 import numpy as np
 import pandas as pd
+from pathlib import Path
 
 import A_utilities
 import B_generator
@@ -48,11 +49,11 @@ MAX_EP_LENGTH = 200  # max. allowed number of steps per episode
 PRINT_EVERY = 10  # print progress every n episode
 
 # agent's hyperparameters
-CHECKPOINT = r'04_checkpoints\2020_10_09\ESA_ep21000.h5'  # checkpoint to load
+CHECKPOINT = Path('04_checkpoints/2020_10_09/ESA_ep21000.h5')  # checkpoint to load
 EPSILON = 1  # 0.05  # set epsilon for the test
 DISCOUNT = 0.99
 
-STATS_SAVEPATH = r'06_results\stats.csv'
+STATS_SAVEPATH = Path('06_results/stats.csv')
 
 ###############################################################################
 # dictionaries
@@ -213,7 +214,7 @@ for episode in range(EPISODES):
         pltr.progress_plot(np.array(pos_ths), np.array(pos_bis),
                            np.array(actions), rewards, 110, 112, 150, 152,
                            200, 202, 220, 222, episode,
-                           r'06_results\sample.png')
+                           Path('06_results/sample.png'))
 
         # pltr.render_episode(r'02_plots\tmp', fps=2, x_pix=1680, y_pix=480,
         #                     savepath=fr'06_results\sample.avi')

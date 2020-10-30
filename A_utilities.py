@@ -16,12 +16,14 @@ import pandas as pd
 
 class utilities():
 
-    def __init__(self, N_CLASSES):
-        self.N_CLASSES = N_CLASSES
+    def __init__(self, N_CLASSES:int):
+        self.N_CLASSES = N_CLASSES #number of rockmass classes
 
-    def master_stats_dataframe(self, savepath, start_episode=None):
-        # function that either gets an existing dataframe with already
-        # record edepisode statistics or create new one
+    def master_stats_dataframe(self, savepath:str, start_episode: pd.DataFrame=None) -> pd.DataFrame:
+        """
+        function that either gets an existing dataframe with already
+        record edepisode statistics or create new one
+        """
         try:
             df = pd.read_csv(savepath)
             # drop last row to avoid double rows
@@ -41,9 +43,10 @@ class utilities():
 
     def ep_stats_dataframe(self, episode, rewards, epsilon, ep_pf, losses_,
                            accuracies_, instabilites, frac_rt1_rt2, pos_th,
-                           pos_bi, dist_th_bi, step, term, actions):
-        # create and return dataframe with statistics of one episode that will
-        # then be appended to the main episode statistics dataframe
+                           pos_bi, dist_th_bi, step, term, actions) -> pd.DataFrame:
+        """create and return dataframe with statistics of one episode that will
+        then be appended to the main episode statistics dataframe
+        """
         df = pd.DataFrame({'episode': [episode], 'ep. rewards': [sum(rewards)],
                            'epsilons': [epsilon], 'ep. pf': ep_pf,
                            'ep. loss': [np.mean(losses_)],
@@ -65,15 +68,14 @@ class utilities():
             df[ep_action] = ep_counts[i]
 
         return df
+    
+    def ANN_input(self, geo_section:int, sup_section:int) -> np.array:
+        """function creates the hypermatrix / array that is the agent's input"""
+        section = geo_section / self.N_CLASSES
+        return np.dstack((section, sup_section))
 
-    def ANN_input(self, geo_section, sup_section):
-        # function creates the hypermatrix / array that is the agent's input
-        geo_section = geo_section / self.N_CLASSES
-        return np.dstack((geo_section, sup_section))
-
-    def print_status(self, df, PRINT_EVERY):
-        # function prints the status of the training progress at the current
-        # episode
+    def print_status(self, df:pd.DataFrame, PRINT_EVERY:int) -> None:
+        """function prints the status of the training progress at the current episode"""
         episode = int(df['episode'].iloc[-1])
         epsilon = round(df['epsilons'].iloc[-1], 4)
         pr_rew = int(np.round(df['ep. rewards'].iloc[-PRINT_EVERY:].mean(), 0))
@@ -94,4 +96,3 @@ class utilities():
 
         print(f'ep:{episode}, eps:{epsilon}, rew:{pr_rew}, loss:{pr_loss}, acc:{pr_acc}')
         print(f'pos th/bi: {pr_pos_th}/{pr_pos_bi}, n blasts:{pr_n_blasts}, instable:{pr_instable}, act:{a_most_used}, terminals:{pr_terminal}\n')
-
