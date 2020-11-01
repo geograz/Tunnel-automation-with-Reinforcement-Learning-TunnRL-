@@ -13,7 +13,7 @@ DOI: ...
 The paper was published as part of a collaboration on Machine Learning between the __Institute of Rock Mechanics and Tunnelling (Graz University of Technology)__
 and the __Norwegian Geotechnical Institute (NGI)__ in Oslo.
 
-## Setup the environment
+## Setup the environment and folder structure
 
 Create a new environment with
 
@@ -31,6 +31,12 @@ Deactivate with
 
 ```bash
 conda deactivate
+```
+
+Setup folder structure, run:
+
+```bash
+bash folder_structure.sh
 ```
 
 ## Code and Folder Structure
