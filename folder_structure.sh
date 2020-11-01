@@ -1,3 +1,4 @@
+#!/bin/bash
 #build the neccessary folder structure
 mkdir 02_plots/tmp
 mkdir 04_checkpoints
