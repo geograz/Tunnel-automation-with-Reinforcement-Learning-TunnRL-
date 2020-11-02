@@ -9,3 +9,6 @@
 
 # automatically generated folder
 __pycache__/
+
+#personal pre-commit hoooks:
+.pre-commit-config.yaml

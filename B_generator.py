@@ -13,17 +13,20 @@ code contributors: G.H. Erharter,
 
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
 
 class generator():
 
-    def __init__(self, n_datapoints):
+    def __init__(self, n_datapoints: int):
         self.n_dp = n_datapoints  # number of datapoints
 
     def gen_rand_walk(self):
-        # function generates a random walk with boundaries
-        # https://www.geeksforgeeks.org/random-walk-implementation-python/
-        # Probability to move up or down
+        """
+        function generates a random walk with boundaries
+        https://www.geeksforgeeks.org/random-walk-implementation-python/
+        Probability to move up or down
+        """
         prob = [0.05, 0.95]
 
         # statically defining the starting position
@@ -42,14 +45,14 @@ class generator():
 
         return np.array(positions[:-1])
 
-    def normalize(self, data):
-        # min - max scaling
+    def normalize(self, data) -> float:
+        """min - max scaling"""
         data = data - data.min()  # shift min to 0
         data = data / data.max()  # set max to 1
         return data
 
-    def generate_rock_types(self, N_CLASSES):
-        # function transforms the random walk into categorical rockmass types
+    def generate_rock_types(self, N_CLASSES: int):
+        """ function transforms the random walk into categorical rockmass types """
         rock_types = self.gen_rand_walk()
         rock_types = self.normalize(rock_types)
         rock_types = rock_types*(N_CLASSES-1)
@@ -90,7 +93,7 @@ if __name__ == '__main__':
 
     tunnel = D_tunnel.tunnel(TUNNEL_LEN + ADDITIONAL, RESOLUTION,
                              cutting_lengths, support_lengths)
-    tunnel.update_sections(pos_th, pos_bi, rock_types, TH_1_0)
+    tunnel.update_sections(pos_th, pos_bi, rock_types, TH_1_0) #TODO: gets error. Too many arguments
     geo_section = tunnel.geo_section
 
     pltr = E_plotter.plotter()
@@ -114,4 +117,4 @@ if __name__ == '__main__':
     ax.set_ylabel('random walk')
 
     plt.tight_layout()
-    plt.savefig(r'02_plots\00_data_generator.jpg', dpi=600)
+    plt.savefig(Path('02_plots/00_data_generator.jpg'), dpi=600)

@@ -16,8 +16,8 @@ import numpy as np
 
 class tunnel():
 
-    def __init__(self, TUNNEL_LEN, RESOLUTION,
-                 cutting_lengths, support_lengths):
+    def __init__(self, TUNNEL_LEN: int, RESOLUTION: int,
+                 cutting_lengths: dict, support_lengths: dict):
         self.cutting_lengths = cutting_lengths
         self.support_lengths = support_lengths
         self.RES = RESOLUTION
@@ -30,12 +30,12 @@ class tunnel():
         # section with face supports
         self.sup_section = np.full((2, self.TUNNEL_LEN), 0)
 
-    def update_positions(self, action, max_pos):
+    def update_positions(self, action: int, max_pos:int):
         if self.pos_th > max_pos and action < 200:
             pass
         elif self.pos_bi > max_pos and action >= 200:
             pass
-        # only update if position is not bejond breakthrough
+        # only update if position is not beyond breakthrough
         else:
             if action < 200:  # top heading
                 self.pos_th += self.cutting_lengths[action]*self.RES
@@ -43,7 +43,7 @@ class tunnel():
                 self.pos_bi += self.cutting_lengths[action]*self.RES
             self.dist_th_bi = np.abs(self.pos_th - self.pos_bi)
 
-    def update_sections(self, rockmass_types, action):
+    def update_sections(self, rockmass_types, action:int):
         # update top heading
         self.geo_section[0, :][:self.pos_th] = rockmass_types[:self.pos_th]
         # update bench

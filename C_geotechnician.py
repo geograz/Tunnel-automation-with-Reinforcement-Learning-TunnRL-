@@ -17,6 +17,7 @@ code contributors: G.H. Erharter
 """
 
 from collections import deque
+from typing import Deque, Tuple
 
 import numpy as np
 import random
@@ -26,14 +27,14 @@ from tensorflow.keras.layers import Dense, Conv2D, Activation, Flatten
 from tensorflow.keras.optimizers import RMSprop
 
 
-class geotechnician():
+class geotechnician:
+    """calculations performed by the geotechnican"""
 
     def __init__(self):
         pass
 
-    def face_pressure(self, tunnel_diameter, cutting_length, rockmass_dict):
-        # face pressure equation after Vermeer et al (2002)
-        # for open face tunnelling
+    def face_pressure(self, tunnel_diameter: float, cutting_length: int, rockmass_dict: dict):
+        """ face pressure equation after Vermeer et al (2002) for open face tunnelling"""
         unit_weight = rockmass_dict['spec. weight [N/m³]']
         cohesion = rockmass_dict['cohesion [Pa]']
         friction_angle = rockmass_dict['friction angle [°]']
@@ -43,8 +44,9 @@ class geotechnician():
 
         return pf
 
-    def check_stability(self, sup_section, pos_excavation, tunnel_diameter,
-                        cutting_length, rockmass_dict):
+    def check_stability(self, sup_section: list, pos_excavation: int, tunnel_diameter: float,
+                        cutting_length: int, rockmass_dict: dict):
+        """checks face stability, and return action values"""
         # if excavation is within supported area pf = always negative
         if sup_section[pos_excavation] == 1:
             pf = -1
@@ -55,10 +57,11 @@ class geotechnician():
 
 
 class DQNAgent:
+    """functionality to make, train and interact with the DQN agent"""
 
-    def __init__(self, OBSERVATION_SPACE_VALUES, actions,
-                 REPLAY_MEMORY_SIZE=100_000, MIN_REPLAY_MEMORY_SIZE=1_000,
-                 MINIBATCH_SIZE=64, DISCOUNT=0.99, UPDATE_TARGET_EVERY=10,  # 5
+    def __init__(self, OBSERVATION_SPACE_VALUES: tuple, actions: list,
+                 REPLAY_MEMORY_SIZE: int=100_000, MIN_REPLAY_MEMORY_SIZE: int=1_000,
+                 MINIBATCH_SIZE: int=64, DISCOUNT: float=0.99, UPDATE_TARGET_EVERY: int=10,  # 5
                  checkpoint=None):
 
         self.OBSERVATION_SPACE_VALUES = OBSERVATION_SPACE_VALUES
@@ -80,14 +83,17 @@ class DQNAgent:
         self.target_model = self.create_model()
         self.target_model.set_weights(self.model.get_weights())
 
-        # An array with last n steps for training
-        self.replay_memory = deque(maxlen=REPLAY_MEMORY_SIZE)
+        # An efficient container with stored experience(St,at,rt+1,st+1, done) from last n steps for training
+        self.replay_memory: Deque = deque(maxlen=REPLAY_MEMORY_SIZE)
 
         # Used to count when to update target network with main network's weights
         self.target_update_counter = 0
 
     def create_model(self):
-        # except input layer, network equal to original DQN network
+        """
+        creates the CNN-model.
+        except input layer, network equal to original DQN network
+        """
         model = Sequential()
 
         model.add(Conv2D(32, kernel_size=(1, 16), strides=(1, 8),
@@ -109,19 +115,26 @@ class DQNAgent:
         print(model.summary())
         return model
 
-    def update_replay_memory(self, transition):
+    def update_replay_memory(self, transition: Tuple[np.array, int, int, np.array, bool]) -> None:
+        """transition is a tuple of experience-info at a certain timestep
+         (st, at, rt+1, st+1, done)"""
         self.replay_memory.append(transition)
 
-    # Queries main network for Q values given current observation space (environment state)
-    def get_qs(self, state):
+    
+    def get_qs(self, state: np.array) -> np.array:
+        """Queries main network for Q values given current observation space 
+        (environment state)"""
         return self.model.predict(np.array(state).reshape(-1, *state.shape))[0]
 
-    def train(self, terminal_state, step):
-        # Start training only if certain number of samples is already saved
+    def train(self, terminal_state: bool, step: int):
+        """Trains the ANN.
+        Start training only if certain number of samples is already saved
+        """
         if len(self.replay_memory) < self.MIN_REPLAY_MEMORY_SIZE:
             return
 
-        # Get a minibatch of random samples from memory replay table
+        # Get a minibatch of random samples from memory replay table, like a standard ANN
+        # minibatch is a list of tuples
         minibatch = random.sample(self.replay_memory, self.MINIBATCH_SIZE)
 
         # Get current states from minibatch, then query NN model for Q values
@@ -135,11 +148,11 @@ class DQNAgent:
 
         X = []
         y = []
-
+        # traversing all the experience-tuples in minibatch
         for index, (current_state, action, reward, new_current_state, done) in enumerate(minibatch):
             if not done:
                 max_future_q = np.max(future_qs_list[index])
-                new_q = reward + self.DISCOUNT * max_future_q
+                new_q = reward + self.DISCOUNT * max_future_q #using the Bellmann equation
             else:
                 new_q = reward
 
@@ -166,12 +179,14 @@ class DQNAgent:
 
         return hist
 
-    def decay_epsilon(self, epsilon, MIN_EPSILON, EPSILON_DECAY):
-        # function that decays epsilon after every finished episode
+    def decay_epsilon(self, epsilon, MIN_EPSILON, EPSILON_DECAY: float):
+        """function that decays epsilon after every finished episode"""
         if epsilon > MIN_EPSILON:
             epsilon *= EPSILON_DECAY
             epsilon = max(MIN_EPSILON, epsilon)
         return epsilon
 
     def save(self, checkpoint):
+        """saves a model from a certain episode"""
         self.model.save(checkpoint)
+

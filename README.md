@@ -13,7 +13,7 @@ DOI: ...
 The paper was published as part of a collaboration on Machine Learning between the __Institute of Rock Mechanics and Tunnelling (Graz University of Technology)__
 and the __Norwegian Geotechnical Institute (NGI)__ in Oslo.
 
-## Setup the environment
+## Setup the environment and folder structure
 
 Create a new environment with
 
@@ -33,8 +33,11 @@ Deactivate with
 conda deactivate
 ```
 
-#should we describe how the code should be run regarding cuda-support etc? We should also describe what length of time that can be expected to train the model on a laptop (describe specs)
+Setup folder structure, run:
 
+```bash
+bash folder_structure.sh
+```
 
 ## Code and Folder Structure
 
@@ -53,11 +56,29 @@ To run the Reinfocement Learning Simulation, execute the Python files from a fol
 - 06_results ... a folder that will contain saved files and plots of trained models that are tested
   - tmp ... a subfolder of 06_results that temporarily saves single frames of rendered episodes (like in 02_plots)
 
+## Pseudo - code for the utilized DQN-algorithm
+
+(inspired by [Deeplizard](https://deeplizard.com/learn/video/ewRw996uevM))
+
+- A. Initialize replay memory capacity ("un-correlates" the otherwise sequential correlated input)
+- B. Inititalize the policy-ANN (keeps the optimal approximated Q-function) with random weights
+- C. Clone the policy-ANN to a second target-ANN that is used for computing $ Q^* $ in $Q^*(s,a) - Q(s,a) = loss$
+- D. For each episode:
+  1. Initialize the starting state (not resetting the weights)
+  2. For each time step:
+      - Select an action after an epsilon-greedy strategy (exploitation or exploration)
+      - Execute the selected action in and emulator
+      - Observe reward and next state
+      - Store experience (a tuple of old-state, action, reward, new-state) in replay memory
+      - Sample a random batch from replay memory
+      - Preprocess all states (an array of values) from batch
+      - Pass batch of preprocessed states and next-states to policy-ANN and target-ANN. Predict Q-values for both ANN's.
+      - Calculate loss between output Q-values from policy-ANN and target-ANN
+      - Standard gradient descent with back propagation updates weights in the policy-ANN to minimize loss. Every xxx timestep the weights in the target-ANN is updated with weights from the policy-ANN
+
 ## References
 
 Besides other references we especially want to highlight the [Reinforcement Learning with Python](https://www.youtube.com/playlist?list=PLQVvvaa0QuDezJFIOU5wDdfy4e9vdnx-7)
 tutorial series of [Sentdex](https://www.youtube.com/c/sentdex) which served as a basis for the agent in `C_geotechnician.py`.
 
 - ... other references
-
-

@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 import os
+from pathlib import Path
 import pandas as pd
 
 
@@ -49,8 +50,8 @@ class plotter():
         cmap = LinearSegmentedColormap('custom_cmap', cdict)
         return cmap
 
-    def reward_plot(self, df, savepath, windows=100, plot_eprewpoints=True,
-                    linewidth=1.5):
+    def reward_plot(self, df: pd.DataFrame, savepath: str, windows=100, plot_eprewpoints=True,
+                    linewidth=1.5) -> None:
 
         episode = int(df['episode'].iloc[-1])
         a_counts_norm = (df[self.actions].values / df['blasts per breakthrough'].values[:, None]).T
@@ -214,7 +215,7 @@ class plotter():
         plt.close()
 
     def render_geo_section(self, geo_section):
-        # dictionary with colors for rockmass
+        """ dictionary with colors for rockmass """
         geo_colors = {0: np.array([0, 0, 0]),  # not excavated yet
                       1: np.array([185, 122, 87]),  # brown = weak rock
                       2: np.array([112, 146, 190])}  # blue = strong rock
@@ -245,7 +246,7 @@ class plotter():
                   loc=(1.01, 0), fontsize=8)
 
     def render_sup_section(self, sup_section):
-        # dictionary with colors for support
+        """ dictionary with colors for support """
         sup_colors = {0: np.array([0, 0, 0]), 1: np.array([195, 195, 195])}
 
         # create 3D RGB frames
@@ -293,13 +294,13 @@ class plotter():
             out = cv2.VideoWriter(savepath, fourcc, fps, (x_pix, y_pix))
 
             for i in range(n_frames):
-                frame = cv2.imread(fr'02_plots\tmp\{i}.png')
+                frame = cv2.imread(Path(f'02_plots/tmp/{i}.png'))
                 out.write(frame)
 
             out.release()
 
         for i in range(n_frames):
-            os.remove(fr'02_plots\tmp\{i}.png')
+            os.remove(Path(f'02_plots/tmp/{i}.png'))
 
     def test_stats_histograms(self, df, savepath):
         # function that plots histograms for statistics of a tested agent
