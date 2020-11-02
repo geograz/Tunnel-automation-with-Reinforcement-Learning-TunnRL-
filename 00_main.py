@@ -14,7 +14,6 @@ code contributors: G.H. Erharter
 import numpy as np
 from pathlib import Path
 from typing import List
-from tqdm import tqdm
 
 import A_utilities
 import B_generator
@@ -111,7 +110,7 @@ utils.suppress_warnings()
 df = utils.master_stats_dataframe(STATS_SAVEPATH, start_episode=PREV_EP)
 
 # main loop that iterates over all episodes. Tqdm show progress bar
-for episode in tqdm(range(PREV_EP, PREV_EP+episodes)):
+for episode in range(PREV_EP, PREV_EP+episodes):
     a = TH_1_2  # initial action is top heading supported with 10m support
     step = 1  # counter of steps in every episode
     instabilites = 0  # counter for how many faces that are instable
