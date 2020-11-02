@@ -19,6 +19,10 @@ class utilities():
     def __init__(self, N_CLASSES:int):
         self.N_CLASSES = N_CLASSES #number of rockmass classes
 
+    def suppress_warnings(self) -> None:
+        """suppress some chosen runtime warnings"""
+        np.seterr(all='ignore') #ignore floating point errors
+
     def master_stats_dataframe(self, savepath:str, start_episode: pd.DataFrame=None) -> pd.DataFrame:
         """
         function that either gets an existing dataframe with already

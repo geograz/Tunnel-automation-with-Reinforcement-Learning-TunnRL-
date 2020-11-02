@@ -45,7 +45,7 @@ class generator():
 
         return np.array(positions[:-1])
 
-    def normalize(self, data):
+    def normalize(self, data) -> float:
         """min - max scaling"""
         data = data - data.min()  # shift min to 0
         data = data / data.max()  # set max to 1

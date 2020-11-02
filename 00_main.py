@@ -12,8 +12,8 @@ code contributors: G.H. Erharter
 
 import numpy as np
 from pathlib import Path
+from typing import List
 from tqdm import tqdm
-np.seterr(all='ignore') #ignore floating point errors
 
 import A_utilities
 import B_generator
@@ -102,6 +102,7 @@ agent = C_geotechnician.DQNAgent(observation_space_values,
                                  list(cutting_lengths.keys()),
                                  DISCOUNT=DISCOUNT, checkpoint=checkpoint)
 pltr = E_plotter.plotter()
+utils.suppress_warnings()
 
 ###############################################################################
 
@@ -109,7 +110,7 @@ pltr = E_plotter.plotter()
 df = utils.master_stats_dataframe(STATS_SAVEPATH, start_episode=PREV_EP)
 
 # main loop that iterates over all episodes. Tqdm show progress bar
-for episode in tqdm(range(PREV_EP, PREV_EP+episodes), ascii=True, unit="episode"):
+for episode in tqdm(range(PREV_EP, PREV_EP+episodes)):
     a = TH_1_2  # initial action is top heading supported with 10m support
     step = 1  # counter of steps in every episode
     instabilites = 0  # counter for how many faces that are instable
@@ -117,13 +118,13 @@ for episode in tqdm(range(PREV_EP, PREV_EP+episodes), ascii=True, unit="episode"
     done = False  # one episode continues until done = True
 
     # empty lists that collect statistics of each episode
-    actions = []  # all actions used during episode
-    pos_ths = []  # all positions of the top heading excavation
-    pos_bis = []  # all positions of bench excavation
-    dists_th_bi = []  # distances between top heading and bench
-    rewards = []  # development of reward over the episode
-    losses_ = []  # ANN loss after each prediction
-    accuracies_ = []  # ANN acuracy after each prediction
+    actions: List[int] = []  # all actions used during episode
+    pos_ths: List[float] = []  # all positions of the top heading excavation
+    pos_bis: List[float] = []  # all positions of bench excavation
+    dists_th_bi: List[float] = []  # distances between top heading and bench
+    rewards: List[float] = []  # development of reward over the episode
+    losses_: List[float] = []  # ANN loss after each prediction
+    accuracies_: List[float] = []  # ANN acuracy after each prediction
 
     ############################################################################
     # resets environment
