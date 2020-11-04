@@ -9,7 +9,7 @@ rendering whole episodes. Also contains functions that plot special figures
 for the paper.
 
 Created on Wed Jul  1 15:30:52 2020
-code contributors: G.H. Erharter
+code contributors: Georg H. Erharter, Tom F. Hansen
 """
 
 import cv2
@@ -141,7 +141,6 @@ class plotter():
         ax5_1.set_ylabel(f'timeouts\nper {windows} episodes',
                          color=self.garnet_red)
 
-        plt.tight_layout()
         plt.savefig(savepath, dpi=600)
         plt.close()
 
@@ -294,13 +293,13 @@ class plotter():
             out = cv2.VideoWriter(savepath, fourcc, fps, (x_pix, y_pix))
 
             for i in range(n_frames):
-                frame = cv2.imread(Path(f'02_plots/tmp/{i}.png'))
+                frame = cv2.imread(fr'02_plots/tmp/{i}.png')
                 out.write(frame)
 
             out.release()
 
         for i in range(n_frames):
-            os.remove(Path(f'02_plots/tmp/{i}.png'))
+            os.remove(f'02_plots/tmp/{i}.png')
 
     def test_stats_histograms(self, df, savepath):
         # function that plots histograms for statistics of a tested agent
@@ -354,6 +353,77 @@ class plotter():
         ax.set_ylabel('n choices of an action per ep.')
         ax.set_title(f'{len(df)} test runs')
         ax.grid(alpha=0.5)
+
+        plt.tight_layout()
+        plt.savefig(savepath, dpi=600)
+        plt.close()
+
+    def multi_agent_plot(self, max_eps, rewards, instabilities,
+                         n_blasts, losses, savepath, window=500):
+        """
+        plot that allows visualization of statistics from up to 10 agents
+        """
+
+        # set the rcParams to a high value as there are many datapoints to plot
+        plt.rcParams['agg.path.chunksize'] = 40_000
+
+        colors = [f'C{i}' for i in range(10)]
+
+        fig, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, ncols=1,
+                                                 figsize=(14, 10))
+
+        # plot data to the 4 axes
+        for i in range(len(max_eps)):
+            if i < 10:
+                x = np.arange(max_eps[i])
+
+                ax1.plot(x, rewards[i], color=colors[i], alpha=0.1)
+                ax1.plot(x, rewards[i].rolling(window=window,
+                                               center=True).mean(),
+                         color=colors[i], label=f'agent {i+1}')
+
+                ax2.plot(x, instabilities[i], color=colors[i], alpha=0.1)
+                ax2.plot(x, instabilities[i].rolling(window=window,
+                                                     center=True).mean(),
+                         color=colors[i], label=f'agent {i+1}')
+
+                ax3.plot(x, n_blasts[i], color=colors[i], alpha=0.1)
+                ax3.plot(x, n_blasts[i].rolling(window=window,
+                                                center=True).mean(),
+                         color=colors[i], label=f'agent {i+1}')
+
+                ax4.plot(x, losses[i], color=colors[i], alpha=0.1)
+                ax4.plot(x, losses[i].rolling(window=window,
+                                              center=True).mean(),
+                         color=colors[i], label=f'agent {i+1}')
+
+        # individual styping of axes
+        ax1.set_xlim(left=0, right=max(max_eps))
+        ax1.set_ylim(top=450, bottom=-500)
+        ax1.set_ylabel('cumulative\nepisode rewards')
+        ax1.grid(alpha=0.5)
+        ax1.legend()
+
+        ax2.set_ylim(top=25, bottom=0)
+        ax2.set_xlim(left=0, right=max(max_eps))
+        ax2.set_ylabel('avg. number of\ninstabilities per episode')
+        ax2.grid(alpha=0.5)
+        ax2.legend()
+
+        ax3.set_xlim(left=0, right=max(max_eps))
+        ax3.set_ylim(top=180, bottom=100)
+        ax3.set_ylabel('avg. number of\nblasts per episode')
+        ax3.grid(alpha=0.5)
+        ax3.legend()
+
+        ax4.set_xlim(left=0, right=max(max_eps))
+        # ax4.set_ylim(top=100)
+        ax4.set_yscale('log')
+        ax4.set_ylabel('avg. loss per episode')
+        ax4.set_xlabel('episodes')
+        ax4.grid(alpha=0.5)
+        ax4.yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: '{:g}'.format(y)))
+        ax4.legend()
 
         plt.tight_layout()
         plt.savefig(savepath, dpi=600)
