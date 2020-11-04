@@ -8,7 +8,7 @@ Code that generates a new and unique geological section at the beginning of
 every episode. = part of the environment.
 
 Created on Wed Jul  1 15:29:52 2020
-code contributors: G.H. Erharter,
+code contributors: Georg H. Erharter, Tom F. Hansen
 """
 
 import matplotlib.pyplot as plt
