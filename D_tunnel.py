@@ -8,7 +8,7 @@ Part of the environment that does the updating of positions of the excavation,
 "reveals" new geology and also handles the reward system.
 
 Created on Mon Jul 20 10:47:08 2020
-code contributors: G.H. Erharter
+code contributors: Georg H. Erharter, Tom F. Hansen
 """
 
 import numpy as np
