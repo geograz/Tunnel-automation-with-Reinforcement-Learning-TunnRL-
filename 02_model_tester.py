@@ -10,11 +10,11 @@ product is to save a file with statistics of the tested episodes for further
 analysis / plotting.
 
 Created on Mon Jun  1 08:47:34 2020
-code contributors: G.H. Erharter
+code contributors: Georg H. Erharter, Tom F. Hansen
 """
 
-# part of code has to be put on top to choose a specific hardware component to
-# run an agent. -> cannot run two agents on same GPU
+# part of code has to be put on top to choose a specific hardware component for
+# running an agent. -> cannot run two agents on same GPU
 import os
 # The GPU id to use, usually either "0" or "1"; to use CPU "-1"
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -49,11 +49,15 @@ MAX_EP_LENGTH = 200  # max. allowed number of steps per episode
 PRINT_EVERY = 10  # print progress every n episode
 
 # agent's hyperparameters
-CHECKPOINT = Path('04_checkpoints/2020_10_09/ESA_ep21000.h5')  # checkpoint to load
-EPSILON = 1  # 0.05  # set epsilon for the test
+# we found that better results during testing can be achieved by setting
+# EPSILON > 0. See paper chapter....
+EPSILON = 0.05
 DISCOUNT = 0.99
 
-STATS_SAVEPATH = Path('06_results/stats.csv')
+# path to saved model checkpoint
+CHECKPOINT_PATH = Path('04_checkpoints/2020_10_09/ESA_ep21000.h5')
+# path to where the statistics of the test run should be saved
+TESTSTATS_PATH = Path('06_results/stats.csv')
 
 ###############################################################################
 # dictionaries
@@ -100,17 +104,17 @@ gen = B_generator.generator(n_datapoints)
 gt = C_geotechnician.geotechnician()
 agent = C_geotechnician.DQNAgent(observation_space_values,
                                  list(cutting_lengths.keys()),
-                                 DISCOUNT=DISCOUNT, checkpoint=CHECKPOINT)
+                                 DISCOUNT=DISCOUNT, checkpoint=CHECKPOINT_PATH)
 pltr = E_plotter.plotter()
 
 ###############################################################################
 
 # create dataframe that tracks stats of each testing episode
 try:  # remove prev. stats df if existing
-    os.remove(STATS_SAVEPATH)
-    df = utils.master_stats_dataframe(STATS_SAVEPATH)
+    os.remove(TESTSTATS_PATH)
+    df = utils.master_stats_dataframe(TESTSTATS_PATH)
 except FileNotFoundError:
-    df = utils.master_stats_dataframe(STATS_SAVEPATH)
+    df = utils.master_stats_dataframe(TESTSTATS_PATH)
 
 # main loop that iterates over all episodes
 for episode in range(EPISODES):
@@ -219,4 +223,4 @@ for episode in range(EPISODES):
         # pltr.render_episode(r'02_plots\tmp', fps=2, x_pix=1680, y_pix=480,
         #                     savepath=fr'06_results\sample.avi')
 
-        df.to_csv(STATS_SAVEPATH, index=False)
+        df.to_csv(TESTSTATS_PATH, index=False)
