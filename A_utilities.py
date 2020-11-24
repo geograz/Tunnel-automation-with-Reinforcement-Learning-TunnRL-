@@ -22,8 +22,8 @@ class utilities():
     def master_stats_dataframe(self, savepath: str,
                                start_episode: pd.DataFrame=None) -> pd.DataFrame:
         """
-        function that either gets an existing dataframe with already
-        record edepisode statistics or create new one
+        Function that either gets an existing dataframe with already
+        recorded edepisode statistics or creates a new one.
         """
         try:
             df = pd.read_csv(savepath)
@@ -78,8 +78,8 @@ class utilities():
         return np.dstack((section, sup_section))
 
     def print_status(self, df: pd.DataFrame, PRINT_EVERY: int) -> None:
-        """function prints the status of the training progress at the current
-        episode"""
+        """function prints the status of the training progress of the current
+        episode to the console"""
         episode = int(df['episode'].iloc[-1])
         epsilon = round(df['epsilons'].iloc[-1], 4)
         pr_rew = int(np.round(df['ep. rewards'].iloc[-PRINT_EVERY:].mean(), 0))
