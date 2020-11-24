@@ -43,14 +43,14 @@ EPISODES = 120_001  # total number of episodes to go through
 MAX_EP_LENGTH = 200  # max. allowed number of steps per episode
 SHOW_EVERY = 1_000  # make a plot, rendering and save every n episode
 PRINT_EVERY = 100  # print progress every n episode
-PREV_EP = 51_000  # number of starting episode (0 for a fresh start)
+PREV_EP = 0  # number of starting episode (0 for a fresh start)
 
 # paths to save different files
-STATS_PATH = Path('02_plots/2020_10_09/episode_stats.csv')  # statistics file
+STATS_PATH = Path('02_plots/episode_stats.csv')  # statistics file
 CHECKPOINT_PATH = Path(f'04_checkpoints/ESA_ep{PREV_EP}.h5')  # model checkpoints
 
 # agent's hyperparameters
-epsilon = 0.210131153976162  # initial exploration
+epsilon = 1  # initial exploration
 MIN_EPSILON = 0.05  # final exploration
 DISCOUNT = 0.99
 EPSILON_DECAY = 0.99997  # Every episode will be epsilon*EPS_DECAY
@@ -233,10 +233,10 @@ for episode in range(PREV_EP, PREV_EP+episodes):
         pltr.progress_plot(np.array(pos_ths), np.array(pos_bis),
                            np.array(actions), rewards, 110, 112, 150, 152,
                            200, 202, 220, 222, episode,
-                           Path(f'02_plots/episode_{episode}_rewards.png'))
+                           Path(f'02_plots/episode_{episode}_sample.png'))
 
         pltr.reward_plot(df, savepath=Path(f'02_plots/episode_{episode}_rewards.png'),
-                         windows=100, plot_eprewpoints=True)
+                         windows=100, plot_all=True)
 
         pltr.render_episode(r'02_plots/tmp', fps=2, x_pix=1680, y_pix=480,
                             savepath=fr'02_plots/ep{episode}.avi')
