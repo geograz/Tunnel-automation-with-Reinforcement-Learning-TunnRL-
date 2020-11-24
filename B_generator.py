@@ -21,13 +21,12 @@ class generator():
     def __init__(self, n_datapoints: int):
         self.n_dp = n_datapoints  # number of datapoints
 
-    def gen_rand_walk(self):
+    def gen_rand_walk(self) -> np.array:
         """
         function generates a random walk with boundaries
         https://www.geeksforgeeks.org/random-walk-implementation-python/
-        Probability to move up or down
         """
-        prob = [0.05, 0.95]
+        prob = [0.05, 0.95]  # Probability to move up or down
 
         # statically defining the starting position
         start = 50
@@ -45,18 +44,22 @@ class generator():
 
         return np.array(positions[:-1])
 
-    def normalize(self, data) -> float:
-        """min - max scaling"""
+    def normalize(self, data: np.array) -> np.array:
+        """min - max scaling of numpy array"""
         data = data - data.min()  # shift min to 0
         data = data / data.max()  # set max to 1
         return data
 
-    def generate_rock_types(self, N_CLASSES: int):
-        """ function transforms the random walk into categorical rockmass types """
-        rock_types = self.gen_rand_walk()
-        rock_types = self.normalize(rock_types)
-        rock_types = rock_types*(N_CLASSES-1)
-        return np.round(rock_types, 0).astype(int)
+    def generate_rock_types(self, N_CLASSES: int, return_rand_walk=False) -> np.array:
+        """ function transforms the random walk into categorical rockmass
+        types """
+        rand_walk = self.gen_rand_walk()
+        rand_walk_norm = self.normalize(rand_walk)
+        rock_types = rand_walk_norm*(N_CLASSES-1)
+        if return_rand_walk is True:
+            return np.round(rock_types, 0).astype(int), rand_walk_norm
+        else:
+            return np.round(rock_types, 0).astype(int)
 
 
 if __name__ == '__main__':
@@ -67,12 +70,13 @@ if __name__ == '__main__':
 
     np.random.seed(7)  # fix seed for reproducibility
 
-    # identify the actions
-    TH_1_0, TH_1_2 = 110, 112  # TH_1_1 = 111
-    TH_5_0, TH_5_2 = 150, 152  # TH_5_1 = 151
+    ###########################################################################
+    # identify the actions and get other fixed variables and dictionaries
+    TH_1_0, TH_1_2 = 110, 112
+    TH_5_0, TH_5_2 = 150, 152
 
-    B_0_0, B_0_2 = 200, 202  # B_0_1 = 201
-    B_2_0, B_2_2 = 220, 222  # B_2_1 = 221
+    B_0_0, B_0_2 = 200, 202
+    B_2_0, B_2_2 = 220, 222
 
     cutting_lengths = {TH_1_0: 2, TH_1_2: 2, TH_5_0: 4, TH_5_2: 4,
                        B_0_0: 2, B_0_2: 2, B_2_0: 4, B_2_2: 4}
@@ -81,23 +85,24 @@ if __name__ == '__main__':
 
     TUNNEL_LEN, RESOLUTION, ADDITIONAL, N_CLASSES = 200, 10, 10, 2
 
-    pos_th = 1650
-    pos_bi = 1250
+    ###########################################################################
+    # generate the data
 
+    # instantiate generator and the plotter
     gen = generator(TUNNEL_LEN * RESOLUTION + ADDITIONAL * RESOLUTION)
+    pltr = E_plotter.plotter()
 
-    data = gen.gen_rand_walk()
-    data_norm = gen.normalize(data)
-    rock_types = data_norm*(N_CLASSES-1)
-    rock_types = np.round(rock_types, 0).astype(int) + 1
+    # generate the geological section
+    rock_types, data_norm = gen.generate_rock_types(2, return_rand_walk=True)
 
     tunnel = D_tunnel.tunnel(TUNNEL_LEN + ADDITIONAL, RESOLUTION,
                              cutting_lengths, support_lengths)
-    tunnel.update_sections(pos_th, pos_bi, rock_types, TH_1_0) #TODO: gets error. Too many arguments
+    tunnel.pos_th = 1650  # fixed position of top heading excavation
+    tunnel.pos_bi = 1250  # fixed position of bench excavation
+    tunnel.update_sections(rock_types + 1, TH_1_0)
     geo_section = tunnel.geo_section
 
-    pltr = E_plotter.plotter()
-
+    # plot the figure
     fig = plt.figure(figsize=(14, 4))
 
     ax = fig.add_subplot(2, 1, 1)
@@ -105,14 +110,13 @@ if __name__ == '__main__':
     ax.axvline(2000, color='white')
     ax.text(x=2010, y=1.1, s='breakthrough', color='white', rotation=90)
 
-
     ax = fig.add_subplot(2, 1, 2)
-    ax.plot(np.arange(len(data)), data_norm, color='black')
+    ax.plot(np.arange(len(data_norm)), data_norm, color='black')
     ax.axhline(0.5, color='black', ls='--')
 
     ax.set_yticks([0, 0.5, 1])
     ax.set_yticklabels([0, 0.5, 1])
-    ax.set_xlim(left=0, right=len(data))
+    ax.set_xlim(left=0, right=len(data_norm))
     ax.set_xlabel('tunnellength [dm]')
     ax.set_ylabel('random walk')
 
