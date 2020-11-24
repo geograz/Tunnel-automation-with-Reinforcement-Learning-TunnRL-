@@ -20,20 +20,57 @@ import E_plotter
 pltr = E_plotter.plotter()
 
 
-# ##############################################################################
-# # analysis of training stats of one training pass
+WINDOW = 500  # size of sliding window for plots
+# list of training runs in the "02_plots" folder that should be analyzed
+TRAINING_RUNS = ['2020_09_29', '2020_10_04', '2020_10_09', '2020_10_10',
+                 '2020_10_17']
 
-# df = pd.read_csv(Path('02_plots/episode_stats.csv'))
 
-# idx_max_rew = df['ep. rewards'].argmax()
-# max_rew = int(df['ep. rewards'].iloc[idx_max_rew])
-# print(f'agent reached max reward of {max_rew} at episode {idx_max_rew}')
+##############################################################################
+# analysis of training stats of multiple training passes
+
+# first get the parameters that should be plotted
+max_eps: List[int] = []
+rewards: List[pd.DataFrame] = []
+instabilities: List[pd.DataFrame] = []
+n_blasts: List[pd.DataFrame] = []
+losses: List[pd.DataFrame] = []
+
+for run in TRAINING_RUNS:
+    # load data
+    df = pd.read_csv(Path(f'02_plots/{run}/episode_stats.csv'))
+
+    # identify where the agent has had its best performance
+    idx_max_rew = df['ep. rewards'].rolling(window=WINDOW, center=True).mean().argmax()
+    max_rew = round(df['ep. rewards'].rolling(window=WINDOW, center=True).mean().iloc[idx_max_rew], 0)
+    print(f'run {run} reached max reward of {max_rew} at episode {idx_max_rew}')
+
+    # identify where number of isntabilities was at its minimum
+    idx_min_inst = df['instabilities'].rolling(window=WINDOW, center=True).mean().argmin()
+    min_inst = round(df['instabilities'].rolling(window=WINDOW, center=True).mean().iloc[idx_min_inst], 0)
+    print(f'run {run} reached min instabilities of {min_inst} at episode {idx_min_inst}')
+
+    # identify where number of blasts per episode was at its minimum
+    idx_min_blast = df['blasts per breakthrough'].rolling(window=WINDOW, center=True).mean().argmin()
+    min_blasts = round(df['blasts per breakthrough'].rolling(window=WINDOW, center=True).mean().iloc[idx_min_inst], 0)
+    print(f'run {run} reached min blasts of {min_blasts} at episode {idx_min_blast}\n')
+
+    max_eps.append(df['episode'].max()+1)
+    rewards.append(df['ep. rewards'])
+    instabilities.append(df['instabilities'])
+    n_blasts.append(df['blasts per breakthrough'])
+    losses.append(df['ep. loss'])
+
+# plot the parameters
+pltr.multi_agent_plot(max_eps, rewards, instabilities, n_blasts, losses,
+                      savepath=Path('06_results/model_comparison.jpg'),
+                      window=WINDOW)
 
 
 ##############################################################################
 # analysis of test statistics of one agent
 
-df = pd.read_csv(Path('06_results/stats.csv'))
+df = pd.read_csv(Path('06_results/sample_2020_10_10_ep119000.csv'))
 
 print('\nstatistics: min. max. median')
 print('reward:', df['ep. rewards'].min(), df['ep. rewards'].max(),
@@ -51,32 +88,3 @@ pltr.test_stats_histograms(df, Path('06_results/histograms.jpg'))
 
 # boxplot of the actions that the agent took
 pltr.test_stats_boxplot(df, Path('06_results/boxplot.jpg'))
-
-
-##############################################################################
-# analysis of training stats of multiple training passes
-
-# list of training runs that should be visualized. Respective training
-# statistics files  should be saved in the folder 02_plots.
-training_runs = ['2020_09_29', '2020_10_04', '2020_10_09', '2020_10_10',
-                 '2020_10_17']
-
-# first get the parameters that should be plotted
-max_eps: List[int] = []
-rewards: List[pd.DataFrame] = []
-instabilities: List[pd.DataFrame] = []
-n_blasts: List[pd.DataFrame] = []
-losses: List[pd.DataFrame] = []
-
-for run in training_runs:
-    df = pd.read_csv(Path(f'02_plots/{run}/episode_stats.csv'))
-    max_eps.append(df['episode'].max()+1)
-    rewards.append(df['ep. rewards'])
-    instabilities.append(df['instabilities'])
-    n_blasts.append(df['blasts per breakthrough'])
-    losses.append(df['ep. loss'])
-
-# plot the parameters
-pltr.multi_agent_plot(max_eps, rewards, instabilities, n_blasts, losses,
-                      savepath=Path('06_results/model_comparison.jpg'),
-                      window=500)
