@@ -30,7 +30,9 @@ class tunnel():
         # section with face supports
         self.sup_section = np.full((2, self.TUNNEL_LEN), 0)
 
-    def update_positions(self, action: int, max_pos:int):
+    def update_positions(self, action: int, max_pos: int):
+        ''' function updates the position of the front of the excavation (i.e.
+        tunnel face) based on the chosen action of the agent '''
         if self.pos_th > max_pos and action < 200:
             pass
         elif self.pos_bi > max_pos and action >= 200:
@@ -43,7 +45,9 @@ class tunnel():
                 self.pos_bi += self.cutting_lengths[action]*self.RES
             self.dist_th_bi = np.abs(self.pos_th - self.pos_bi)
 
-    def update_sections(self, rockmass_types, action:int):
+    def update_sections(self, rockmass_types, action: int):
+        ''' function updates the geological section and the support section
+        which serves as the RL agent's state '''
         # update top heading
         self.geo_section[0, :][:self.pos_th] = rockmass_types[:self.pos_th]
         # update bench
@@ -58,6 +62,9 @@ class tunnel():
 
     def handle_rewards(self, break_len, rew_dict, step, MAX_EP_LENGTH,
                        pf, actions, a, MAX_DIST):
+        ''' function handles the rewards / gives points either based on the
+        last action or the current state; penalties are ordered depending on
+        their severity '''
         # check if breakthrough was achieved
         if self.pos_th > break_len * self.RES and self.pos_bi > break_len * self.RES:
             reward = rew_dict['breakthrough']
@@ -87,5 +94,3 @@ class tunnel():
             reward = rew_dict['move']
 
         return reward
-
-
