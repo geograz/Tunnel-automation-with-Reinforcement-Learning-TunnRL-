@@ -13,14 +13,13 @@ Created on Mon Jun  1 08:47:34 2020
 code contributors: Georg H. Erharter, Tom F. Hansen
 """
 
-# part of code has to be put on top to choose a specific hardware component for
-# running an agent. -> cannot run two agents on same GPU
+# # part of code has to be put on top to choose a specific hardware component for
+# # running an agent. -> cannot run two agents on same GPU
 import os
-# The GPU id to use, usually either "0" or "1"; to use CPU "-1"
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+# # The GPU id to use, usually either "0" or "1"; to use CPU "-1"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 import numpy as np
-import pandas as pd
 from pathlib import Path
 
 import A_utilities
@@ -44,9 +43,9 @@ TH_1_0, TH_1_2, TH_5_0, TH_5_2 = 110, 112, 150, 152  # top heading
 B_0_0, B_0_2, B_2_0, B_2_2 = 200, 202, 220, 222  # bench & invert
 
 # episode parameters
-EPISODES = 100  # total number of episodes to go through
+EPISODES = 10_000  # total number of episodes to go through
 MAX_EP_LENGTH = 200  # max. allowed number of steps per episode
-PRINT_EVERY = 10  # print progress every n episode
+PRINT_EVERY = 500  # print progress every n episode
 
 # agent's hyperparameters
 # we found that better results during testing can be achieved by setting
@@ -55,9 +54,9 @@ EPSILON = 0.05
 DISCOUNT = 0.99
 
 # path to saved model checkpoint
-CHECKPOINT_PATH = Path('04_checkpoints/2020_10_09/ESA_ep21000.h5')
+CHECKPOINT_PATH = Path('04_checkpoints/2020_10_10/ESA_ep119000.h5')
 # path to where the statistics of the test run should be saved
-TESTSTATS_PATH = Path('06_results/stats.csv')
+TESTSTATS_PATH = Path('06_results/sample.csv')
 
 ###############################################################################
 # dictionaries
@@ -91,7 +90,7 @@ rockmass_dict2 = {'spec. weight [N/m³]': 25000, 'cohesion [Pa]': 40000,
 # total length of observation space as number of datapoints
 n_datapoints = (TUNNEL_LEN + max(support_lengths.values())) * RESOLUTION
 observation_space_values = (2, n_datapoints, 2)  # shape of observation space
-# maximum length, beyond which no more updates of the position of top head. & bench are donce
+# max. length, beyond which no more updates of top head. or bench are done
 max_pos = (TUNNEL_LEN + max(cutting_lengths.values())) * RESOLUTION
 
 rockmass_dicts = [rockmass_dict1, rockmass_dict2]
