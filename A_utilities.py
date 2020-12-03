@@ -12,6 +12,7 @@ code contributors: Georg H. Erharter, Tom F. Hansen
 
 import numpy as np
 import pandas as pd
+from typing import List
 
 
 class utilities():
@@ -42,10 +43,12 @@ class utilities():
                                '200': [], '202': [], '220': [], '222': []})
         return df
 
-    def ep_stats_dataframe(self, episode, rewards, epsilon, ep_pf, losses_,
-                           accuracies_, instabilites, frac_rt1_rt2, pos_th,
-                           pos_bi, dist_th_bi, step, term,
-                           actions) -> pd.DataFrame:
+    def ep_stats_dataframe(self, episode: float, rewards: List, epsilon: float,
+                           ep_pf: float, losses_: List, accuracies_: List,
+                           instabilites: float, frac_rt1_rt2: float,
+                           pos_th: float, pos_bi: float, dist_th_bi: float,
+                           step: float, term: str,
+                           actions: List) -> pd.DataFrame:
         """create and return dataframe with statistics of one episode that will
         then be appended to the main episode statistics dataframe.
         """
@@ -71,7 +74,8 @@ class utilities():
 
         return df
 
-    def ANN_input(self, geo_section: int, sup_section: int) -> np.array:
+    def ANN_input(self, geo_section: np.array,
+                  sup_section: np.array) -> np.array:
         """function creates the hypermatrix / array that is the agent's
         input"""
         section = geo_section / self.N_CLASSES
