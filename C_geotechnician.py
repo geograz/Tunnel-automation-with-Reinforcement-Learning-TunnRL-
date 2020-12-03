@@ -29,8 +29,9 @@ from typing import Deque, Tuple
 import numpy as np
 import random
 
-from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.callbacks import History
 from tensorflow.keras.layers import Dense, Conv2D, Activation, Flatten
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.optimizers import RMSprop
 
 
@@ -41,9 +42,9 @@ class geotechnician:
         pass
 
     def face_pressure(self, tunnel_diameter: float, cutting_length: int,
-                      rockmass_dict: dict):
+                      rockmass_dict: dict) -> float:
         """ face pressure equation after Vermeer et al (2002) for open face
-        tunnelling"""
+        tunnelling """
         unit_weight = rockmass_dict['spec. weight [N/m³]']
         cohesion = rockmass_dict['cohesion [Pa]']
         friction_angle = rockmass_dict['friction angle [°]']
@@ -53,10 +54,10 @@ class geotechnician:
 
         return pf
 
-    def check_stability(self, sup_section: list, pos_excavation: int,
+    def check_stability(self, sup_section: list, pos_excavation: float,
                         tunnel_diameter: float,
-                        cutting_length: int, rockmass_dict: dict):
-        """checks face stability, and return action values"""
+                        cutting_length: int, rockmass_dict: dict) -> float:
+        """checks face stability, and returns action values"""
         # if excavation is within supported area pf = always negative
         if sup_section[pos_excavation] == 1:
             pf = -1
@@ -101,7 +102,7 @@ class DQNAgent:
         # Used to count when to update target network with main network's weights
         self.target_update_counter = 0
 
-    def create_model(self):
+    def create_model(self) -> Sequential:
         """
         creates the CNN-model.
         except input layer, network equal to original DQN network
@@ -127,7 +128,8 @@ class DQNAgent:
         model.summary()
         return model
 
-    def update_replay_memory(self, transition: Tuple[np.array, int, int, np.array, bool]) -> None:
+    def update_replay_memory(self, transition: Tuple[np.array, int, int,
+                                                     np.array, bool]) -> None:
         """transition is a tuple of experience-info at a certain timestep
          (st, at, rt+1, st+1, done)"""
         self.replay_memory.append(transition)
@@ -137,15 +139,15 @@ class DQNAgent:
         (environment state)"""
         return self.model.predict(np.array(state).reshape(-1, *state.shape))[0]
 
-    def train(self, terminal_state: bool, step: int):
+    def train(self, terminal_state: bool, step: int) -> History:
         """Trains the ANN.
         Start training only if certain number of samples is already saved
         """
         if len(self.replay_memory) < self.MIN_REPLAY_MEMORY_SIZE:
             return
 
-        # Get a minibatch of random samples from memory replay table, like a standard ANN
-        # minibatch is a list of tuples
+        # Get a minibatch of random samples from memory replay table, like a
+        # standard ANN minibatch is a list of tuples
         minibatch = random.sample(self.replay_memory, self.MINIBATCH_SIZE)
 
         # Get current states from minibatch, then query NN model for Q values
@@ -191,13 +193,14 @@ class DQNAgent:
 
         return hist
 
-    def decay_epsilon(self, epsilon, MIN_EPSILON, EPSILON_DECAY: float):
+    def decay_epsilon(self, epsilon, MIN_EPSILON,
+                      EPSILON_DECAY: float) -> float:
         """function that decays epsilon after every finished episode"""
         if epsilon > MIN_EPSILON:
             epsilon *= EPSILON_DECAY
             epsilon = max(MIN_EPSILON, epsilon)
         return epsilon
 
-    def save(self, checkpoint):
+    def save(self, checkpoint) -> None:
         """saves a model from a certain episode"""
         self.model.save(checkpoint)

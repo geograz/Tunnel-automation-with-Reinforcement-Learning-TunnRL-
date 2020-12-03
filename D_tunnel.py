@@ -12,6 +12,7 @@ code contributors: Georg H. Erharter, Tom F. Hansen
 """
 
 import numpy as np
+from typing import List
 
 
 class tunnel():
@@ -30,7 +31,7 @@ class tunnel():
         # section with face supports
         self.sup_section = np.full((2, self.TUNNEL_LEN), 0)
 
-    def update_positions(self, action: int, max_pos: int):
+    def update_positions(self, action: int, max_pos: int) -> None:
         ''' function updates the position of the front of the excavation (i.e.
         tunnel face) based on the chosen action of the agent '''
         if self.pos_th > max_pos and action < 200:
@@ -45,7 +46,7 @@ class tunnel():
                 self.pos_bi += self.cutting_lengths[action]*self.RES
             self.dist_th_bi = np.abs(self.pos_th - self.pos_bi)
 
-    def update_sections(self, rockmass_types, action: int):
+    def update_sections(self, rockmass_types: np.array, action: int) -> None:
         ''' function updates the geological section and the support section
         which serves as the RL agent's state '''
         # update top heading
@@ -60,8 +61,9 @@ class tunnel():
         elif action >= 200:  # bench
             self.sup_section[1, :][self.pos_bi:self.pos_bi+self.support_lengths[action]*self.RES] = 1
 
-    def handle_rewards(self, break_len, rew_dict, step, MAX_EP_LENGTH,
-                       pf, actions, a, MAX_DIST):
+    def handle_rewards(self, break_len: int, rew_dict: dict, step: float,
+                       MAX_EP_LENGTH: int, pf: float, actions: List, a: float,
+                       MAX_DIST: int) -> int:
         ''' function handles the rewards / gives points either based on the
         last action or the current state; penalties are ordered depending on
         their severity '''
