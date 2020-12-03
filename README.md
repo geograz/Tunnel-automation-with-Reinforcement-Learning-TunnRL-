@@ -13,48 +13,44 @@ DOI: ...
 The paper was published as part of a collaboration on Machine Learning between the __Institute of Rock Mechanics and Tunnelling (Graz University of Technology)__
 and the __Norwegian Geotechnical Institute (NGI)__ in Oslo.
 
-## Setup the environment and folder structure
+## Requirements and folder structure
 
-Create a new environment with
+Use the `requirements.txt` file to download the required packages to run the code. We recommend using a package management system like conda for this purpose.
 
-```bash
-conda env create --file environment.yml
+## Code and folder structure set up
+
+The code framework depends on a certain folder structure. The python files should be placed in the main directory. The set up should be done in the following way:
 ```
-
-Activate with
-
-```bash
-conda activate RL-geo
+Reinforcement_Learning_for_Geotechnics
+├── 02_plots
+│   └── tmp
+├── 04_checkpoints
+├── 06_results
+│   └── tmp
+├── 00_main.py
+├── 02_model_tester.py
+├── 04_analyzer.py
+├── A_utilities.py
+├── B_generator.py
+├── C_geotechnician.py
+├── D_tunnel.py
+└── E_plotter.py
 ```
-
-Deactivate with
-
-```bash
-conda deactivate
-```
-
-Setup folder structure, run:
-
+Either set up the folder structure manually or on Linux run:
 ```bash
 bash folder_structure.sh
 ```
 
-## Code and Folder Structure
-
-To run the Reinfocement Learning Simulation, execute the Python files from a folder, that contains the below given files and subfolders:
+## Code description
 
 - `00_main.py` ... is the main executing file
 - `02_model_tester.py` ... file that runs and tests individual checkpoints of already trained model for further analysis
+- `04_analyzer.py` ... file that analyzes and visualizes the performance of agents tested with `02_model_tester.py`
 - `A_utilities.py` ... is a library containing useful functions that do not directly belong to the environment or the agent
 - `B_generator.py` ... part of the environment that generates a new geology for every episode
-- `C_geotechnician.py` ... part of the environment that evaluates the stability and also contains the agent itself
+- `C_geotechnician.py` ... part of the environment that evaluates the stability and also contains the RL agent itself
 - `D_tunnel.py` ... part of the environment that handles the rewards and updates the progress of the excavation
 - `E_plotter.py` ... plotting functionalities to visualize the training progress or render episodes
-- 02_plots ... a folder that will contain plots and renderings of episodes
-  - tmp ... a subfolder of 02_plots that temporarily saves single frames of rendered episodes
-- 04_checkpoints ... a folder where checkpoints of the agent are saved and loaded from
-- 06_results ... a folder that will contain saved files and plots of trained models that are tested
-  - tmp ... a subfolder of 06_results that temporarily saves single frames of rendered episodes (like in 02_plots)
 
 ## Pseudo - code for the utilized DQN-algorithm
 
