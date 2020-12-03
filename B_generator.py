@@ -108,7 +108,8 @@ if __name__ == '__main__':
     ax = fig.add_subplot(2, 1, 1)
     pltr.render_geo_section(geo_section)
     ax.axvline(2000, color='white')
-    ax.text(x=2010, y=1.1, s='breakthrough', color='white', rotation=90)
+    ax.text(x=2010, y=1.1, s='breakthrough', color='white', rotation=90,
+            fontsize=12)
 
     ax = fig.add_subplot(2, 1, 2)
     ax.plot(np.arange(len(data_norm)), data_norm, color='black')
@@ -117,8 +118,8 @@ if __name__ == '__main__':
     ax.set_yticks([0, 0.5, 1])
     ax.set_yticklabels([0, 0.5, 1])
     ax.set_xlim(left=0, right=len(data_norm))
-    ax.set_xlabel('tunnellength [dm]')
-    ax.set_ylabel('random walk')
+    ax.set_xlabel('tunnellength [dm]', fontsize=12)
+    ax.set_ylabel('random walk', fontsize=12)
 
     plt.tight_layout()
     plt.savefig(Path('02_plots/00_data_generator.jpg'), dpi=600)
