@@ -33,7 +33,8 @@ class plotter():
         self.kyanite_blue = np.array([62, 78, 93]) / 255
         self.actions = ['110', '112', '150', '152', '200', '202', '220', '222']
 
-    def custom_cmap(self, color_1: Iterable, color_2: Iterable):  # ---------------> how would one refer to the returned colormap? https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.colors.LinearSegmentedColormap.html
+    def custom_cmap(self, color_1: Iterable,
+                    color_2: Iterable) -> LinearSegmentedColormap:
         ''' custom colormap that goes from color_1 to color_2; after:
         https://stackoverflow.com/questions/16267143/matplotlib-single-colored-colormap-with-saturation
         '''
@@ -170,7 +171,7 @@ class plotter():
         plt.close()
 
     def progress_plot(self, pos_ths, pos_bis, actions, rewards,
-                      a1, a2, a3, a4, a5, a6, a7, a8, episode, savepath):
+                      a1, a2, a3, a4, a5, a6, a7, a8, episode, savepath) -> None:
         ''' figure that shows the progress / selected recorded parameters of
         one selected episode '''
         n_blasts = np.arange(len(rewards))
@@ -185,11 +186,11 @@ class plotter():
                          color='grey',
                          label='distance: top heading - bench')
         ax1.grid(alpha=0.4)
-        ax1.legend(loc='upper left')
+        ax1.legend(loc='upper left', fontsize=12)
 
         ax1.set_xlim(left=0, right=n_blasts.max())
-        ax1.set_ylabel('tunnelmeters [dm]')
-        ax1.set_title(f'episode: {episode+1}')
+        ax1.set_ylabel('tunnelmeters [dm]', fontsize=12)
+        ax1.set_title(f'episode: {episode+1}', fontsize=12)
 
         idx = np.where(actions == a1)[0]-1  # -1 because decision is made before blast
         ax2.scatter(n_blasts[idx], np.full(len(n_blasts), 0)[idx],
@@ -218,7 +219,7 @@ class plotter():
 
         ax2.grid(axis='y', alpha=0.4)
         ax2.set_xlim(left=0, right=n_blasts.max())
-        ax2.set_ylabel('actions')
+        ax2.set_ylabel('actions', fontsize=12)
         ax2.set_yticks(np.arange(0, 8))
         ax2.set_yticklabels(['110', '112', '150', '152', '200', '202', '220',
                              '222'])
@@ -226,17 +227,11 @@ class plotter():
         ax3.plot(n_blasts, np.cumsum(rewards), color='black')
         ax3.set_xlim(left=0, right=n_blasts.max())
         ax3.grid(alpha=0.4)
-        ax3.set_ylabel('cumulative reward')
-        ax3.set_xlabel('blast number')
-
-        ax3_1 = ax3.twinx()
-        ax3_1.plot(n_blasts, rewards, color='black', ls='--')
-        ax3_1.set_xlim(left=0, right=n_blasts.max())
-        ax3_1.set_yscale('log')
-        ax3_1.set_ylabel('rewards')
+        ax3.set_ylabel('cumulative reward', fontsize=12)
+        ax3.set_xlabel('blast / move number', fontsize=12)
 
         plt.tight_layout()
-        plt.savefig(savepath, dpi=300)
+        plt.savefig(savepath, dpi=600)
         plt.close()
 
     def render_geo_section(self, geo_section):
@@ -266,11 +261,11 @@ class plotter():
 
         ax = plt.gca()
         ax.imshow(geo_frame, aspect='auto', interpolation='none')
-        ax.set_ylabel('geological section')
+        ax.set_ylabel('geological section', fontsize=12)
         ax.set_xticklabels([])
         ax.set_yticklabels([])
         ax.legend(geo_lines, ['not excavated', 'weak rock', 'stronger rock'],
-                  loc=(1.01, 0), fontsize=8)
+                  loc=(1.01, 0), fontsize=12)
 
     def render_sup_section(self, sup_section):
         """ funtion that visualizes the current support section (part of the
