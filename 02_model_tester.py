@@ -21,6 +21,7 @@ import os
 
 import numpy as np
 from pathlib import Path
+from typing import List
 
 import A_utilities
 import B_generator
@@ -124,13 +125,13 @@ for episode in range(EPISODES):
     done = False  # one episode continues until done = True
 
     # empty lists that collect statistics of each episode
-    actions = []  # all actions used during episode
-    pos_ths = []  # all positions of the top heading excavation
-    pos_bis = []  # all positions of bench excavation
-    dists_th_bi = []  # distances between top heading and bench
-    rewards = []  # development of reward over the episode
-    losses_ = []  # ANN loss after each prediction
-    accuracies_ = []  # ANN acuracy after each prediction
+    actions: List[int] = []  # all actions used during episode
+    pos_ths: List[float] = []  # all positions of the top heading excavation
+    pos_bis: List[float] = []  # all positions of bench excavation
+    dists_th_bi: List[float] = []  # distances between top heading and bench
+    rewards: List[float] = []  # development of reward over the episode
+    losses_: List[float] = []  # ANN loss after each prediction
+    accuracies_: List[float] = []  # ANN acuracy after each prediction
 
     # generate new / unique geology for episode
     rockmass_types = gen.generate_rock_types(N_CLASSES) + 1
