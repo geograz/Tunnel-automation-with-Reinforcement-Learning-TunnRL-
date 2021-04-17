@@ -1,14 +1,14 @@
-# Reinforcement Learning for Geotechnics
+# Tunnel automation with Reinforcement Learning - TunnRL
 
 This repository contains the codes for the paper:
 
-_Reinforcement Learning based Process Optimization and Strategy Development in Conventional Tunneling_
+_Reinforcement learning based process optimization and strategy development in conventional tunneling_
 
 by Georg H. Erharter, Tom F. Hansen, Zhongqiang Liu and Thomas Marcher
 
-published in ...
+published in __Automation in Construction (Vol. 127; July 2021)__
 
-DOI: ...
+DOI: https://doi.org/10.1016/j.autcon.2021.103701
 
 The paper was published as part of a collaboration on Machine Learning between the __Institute of Rock Mechanics and Tunnelling (Graz University of Technology)__
 and the __Norwegian Geotechnical Institute (NGI)__ in Oslo.
@@ -74,7 +74,6 @@ bash folder_structure.sh
 
 ## References
 
-Besides other references we especially want to highlight the [Reinforcement Learning with Python](https://www.youtube.com/playlist?list=PLQVvvaa0QuDezJFIOU5wDdfy4e9vdnx-7)
+Besides other references given in the paper, we especially want to highlight the [Reinforcement Learning with Python](https://www.youtube.com/playlist?list=PLQVvvaa0QuDezJFIOU5wDdfy4e9vdnx-7)
 tutorial series of [Sentdex](https://www.youtube.com/c/sentdex) which served as a basis for the agent in `C_geotechnician.py`.
 
-- ... other references
