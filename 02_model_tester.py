@@ -2,7 +2,7 @@
 """
 Reinforcement Learning based Process Optimization and Strategy Development in
 Conventional Tunneling; G.H. Erharter, T.F. Hansen, Z. Liu, T. Marcher
-more publication info...
+DOI: https://doi.org/10.1016/j.autcon.2021.103701
 
 Code that runs one individual checkpoint of an agent without learning to test
 its performance. Basic functionality is the same as "00_main.py" and the final

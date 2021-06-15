@@ -2,7 +2,7 @@
 """
 Reinforcement Learning based Process Optimization and Strategy Development in
 Conventional Tunneling; G.H. Erharter, T.F. Hansen, Z. Liu, T. Marcher
-more publication info...
+DOI: https://doi.org/10.1016/j.autcon.2021.103701
 
 Part of the environment that does the updating of positions of the excavation,
 "reveals" new geology and also handles the reward system.

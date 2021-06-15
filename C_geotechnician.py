@@ -2,7 +2,7 @@
 """
 Reinforcement Learning based Process Optimization and Strategy Development in
 Conventional Tunneling; G.H. Erharter, T.F. Hansen, Z. Liu, T. Marcher
-more publication info...
+DOI: https://doi.org/10.1016/j.autcon.2021.103701
 
 Geotechnician class is part of the environment and checks for stability
 The DQNAgent is the actual reinforcement learning agent that "plays" the game
