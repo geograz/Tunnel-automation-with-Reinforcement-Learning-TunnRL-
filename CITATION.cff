@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Erharter"
+  given-names: "Georg H."
+  orcid: "https://orcid.org/0000-0002-7793-9994"
+- family-names: "Hansen"
+  given-names: "Tom F."
+title: "Code to the paper Reinforcement learning based process optimization and strategy development in conventional tunneling"
+version: 1.0.0
+date-released: 2020-12-17
+url: "https://github.com/geograz/Tunnel-automation-with-Reinforcement-Learning-TunnRL-"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Erharter"
+    given-names: "Georg H."
+    orcid: "https://orcid.org/0000-0002-7793-9994"
+  - family-names: "Hansen"
+    given-names: "Tom F."
+  - family-names: "Liu"
+    given-names: "Zhongqiang"
+  - family-names: "Marcher"
+    given-names: "Thomas"
+  doi: "https://doi.org/10.1016/j.autcon.2021.103701"
+  url: "https://www.sciencedirect.com/science/article/pii/S0926580521001527"
+  journal: "Automation in Construction"
+  month: 7
+  title: "Reinforcement learning based process optimization and strategy development in conventional tunneling"
+  volume: 127
+  year: 2021
