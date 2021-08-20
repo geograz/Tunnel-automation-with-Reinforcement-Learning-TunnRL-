@@ -25,7 +25,10 @@ preferred-citation:
   doi: "https://doi.org/10.1016/j.autcon.2021.103701"
   url: "https://www.sciencedirect.com/science/article/pii/S0926580521001527"
   journal: "Automation in Construction"
+  issn: "0926-5805"
   month: 7
   title: "Reinforcement learning based process optimization and strategy development in conventional tunneling"
   volume: 127
   year: 2021
+  keywords: "Conventional tunneling, Reinforcement learning, Tunnel excavation strategy, Machine learning, Excavation sequences"
+  abstract: "Reinforcement learning (RL) - a branch of machine learning - refers to the process of an agent learning to achieve a certain goal by interaction with its environment. The process of conventional tunneling shows many similarities, where a geotechnician (agent) tries to achieve a breakthrough (goal) by excavating the rockmass (environment) in an optimum way. In this paper we present a novel RL based framework for strategy development for conventional tunneling. We developed a virtual environment with the goal of a tunnel breakthrough and with a deep Q-network as the agent's architecture. It can choose from different excavation sequences to reach that goal and learns to do so in an economical and safe way by getting feedback from a specially designed reward system. Result analyses show that the optimal policies have great similarities to current practices of sequential tunneling and the framework has the potential to discover new tunneling strategies."
